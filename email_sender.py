@@ -1,7 +1,6 @@
 from socket import gaierror
 import requests
 import smtplib
-import csv
 import os
 
 from requests.exceptions import ConnectTimeout
@@ -13,16 +12,19 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from time import sleep
-#from daemonize import Daemonize
+# from daemonize import Daemonize
 
 
 # Setup pid file
 
-#pid = "/home/Bitbucket/web_scraping/email_automat/test.pid"
+base_dir = os.getcwd()
+pid_file = "test.pid"
+pid = os.path.join(base_dir, pid_file)
+
 
 def web_availability():
-    #url="http://172.22.0.2:8080"
-    url="http://192.168.100.14:8088/blah"
+    # url="http://172.22.0.2:8080"
+    url = "http://192.168.100.14:8088/blah"
     try:
         response = requests.get(url, timeout=3)
         status = response.status_code
@@ -38,14 +40,15 @@ def web_availability():
 
     return headers, status
 
+
 def send_email(sender, passwd, recipient, headers, status, count):
 
-    ### Server Details
-    smtp_server=os.environ['SMTP_SERVER']
-    port=465
+    # Server Details
+    smtp_server = os.environ['SMTP_SERVER']
+    port = 465
 
-    ### Msg creation
-    message = "Response Headers: "+ str(headers)+ "\n"+"Status: " + str(status) + "\n" + "Missing response count: " + str(count)
+    # Msg creation
+    message = "Response Headers: " + str(headers) + "\n"+"Status: " + str(status) + "\n" + "Missing response count: " + str(count)
 
     msg = MIMEMultipart()
     msg['Subject'] = Header("Sent from python", 'utf-8')
@@ -54,9 +57,9 @@ def send_email(sender, passwd, recipient, headers, status, count):
     msg['To'] = recipient
     msg.attach(MIMEText(message))
 
-    if status !=200:
+    if status != 200:
 
-        count+=1
+        count += 1
         try:
             # send your message with credentials specified above
 
@@ -73,16 +76,13 @@ def send_email(sender, passwd, recipient, headers, status, count):
             print('Failed to connect to the server. Wrong user/password?')
         except smtplib.SMTPException as e:
             print('SMTP error occurred: ' + str(e))
-    else:
-        flag = False
 
-    return count, flag
+    return count
         
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 def main():
     count = 0
-    flag = True
     while True:
 
         # Define mail sender / recipient
@@ -98,6 +98,6 @@ def main():
         sleep(10)
 
 
-#daemon = Daemonize(app="test_app", pid=pid, action=main)
-#daemon.start()
+# daemon = Daemonize(app="test_app", pid=pid, action=main)
+# daemon.start()
 main()
