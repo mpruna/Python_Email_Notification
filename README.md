@@ -41,3 +41,7 @@ docker service ls
 docker network inspect # swarm network created should have a swarm scope
 ```
 
+Refs:  
+* https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html  
+ 
+
