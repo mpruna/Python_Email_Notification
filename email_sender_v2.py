@@ -105,7 +105,7 @@ def send_email(message):
         logger.debug(e_msg)
 
 
-def create_email(headers, status, count):
+def create_email(headers, status, count, was_down):
 
     date = dt.datetime.now().strftime('%y-%m-%d %a %H:%M:%S')
 
@@ -114,34 +114,38 @@ def create_email(headers, status, count):
                                        'Status: ', status, '\n',
                                        'Count: ', count, '\n',
                                        'Date: ', date)
-    if status != 200 and count < 3:
+    if status != 200:
+        count += 1
+
+    if status != 200 and count <=3:
         logger.debug(date)
         send_email(message)
+        was_down = True
 
-    elif status == 200:
+    elif status == 200 and was_down:
         message = "Service up and running"
         print(message)
         send_email(message)
+        was_down = False
         count = 0
 
-    count += 1
 
     logger.debug(message)
 
-    return count
+    return was_down, count
         
 
 # if __name__ == "__main__":
 def main():
     count = 0
+    was_down = True
     while True:
 
         headers, status = web_availability()
-        count = create_email(headers, status, count)
+        was_down, count = create_email(headers, status, count, was_down)
         
-        print(count)
+        print("Consecutive down count", count)
         sleep(10)
-
 
 daemon = Daemonize(app="test_app", pid=pid, action=main)
 daemon.start()
