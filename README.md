@@ -21,6 +21,16 @@ POC Sending email notification when the server is down
 * recipient address  
 * smtp server 
 
+### HTTP responses
+
+| Response | Explanation |
+| --- | --- |
+| (100–199) Responses | Informational responses |
+| (200–299) Responses | Successful responses |
+| (300–399) Responses | Redirects | 
+| (400–499) Responses | Client errors | 
+| (500–599) Responses | and Server errors |  
+
 
 ### Docker setup
 
@@ -43,5 +53,8 @@ docker network inspect # swarm network created should have a swarm scope
 
 Refs:  
 * https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html  
+* https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview  
+* https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol  
+* https://developer.mozilla.org/en-US/docs/Web/HTTP/Status  
  
 
